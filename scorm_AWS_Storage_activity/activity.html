@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Storage Services Matching Activity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f9fc;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #FF9900;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .activity-instructions {
+            background-color: #e1f0fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #FF9900;
+        }
+        .drag-drop-area {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .service-column, .definition-column {
+            flex: 1;
+            min-width: 300px;
+        }
+        .column-title {
+            font-weight: bold;
+            color: #232f3e;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .service-item, .definition-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            cursor: move;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .service-item {
+            background-color: #d5e8f7;
+            border-left: 4px solid #0073bb;
+        }
+        .definition-item {
+            background-color: #e6f3e6;
+            border-left: 4px solid #2d7d46;
+        }
+        .service-item.dragging, .definition-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .service-item.highlight, .definition-item.highlight {
+            background-color: #fff3cd;
+        }
+        .service-item.matched, .definition-item.matched {
+            background-color: #d4edda;
+            border-left: 4px solid #2d7d46;
+            cursor: default;
+        }
+        .service-item.incorrect, .definition-item.incorrect {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .service-item.matched::after, .definition-item.matched::after {
+            content: '✓';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2d7d46;
+            font-weight: bold;
+        }
+        .service-item.incorrect::after, .definition-item.incorrect::after {
+            content: '✗';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .feedback-area {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .check-btn, .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .check-btn {
+            background-color: #FF9900;
+            color: white;
+            margin-right: 10px;
+        }
+        .check-btn:hover {
+            background-color: #e68a00;
+        }
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+        .aws-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .drag-drop-area {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="aws-logo">
+        <img src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png" alt="Powered by AWS" width="150">
+    </div>
+    
+    <div class="container">
+        <h1>AWS Storage Services Matching Activity</h1>
+        
+        <div class="activity-instructions">
+            <p><strong>Instructions:</strong> Drag each AWS storage service to its correct description. Incorrect matches be marked before resetting.</p>
+        </div>
+        
+        <div class="drag-drop-area">
+            <div class="service-column" id="services-column">
+                <div class="column-title">AWS Storage Services</div>
+                <div class="service-item" draggable="true" data-service="ebs">Amazon EBS</div>
+                <div class="service-item" draggable="true" data-service="s3">Amazon S3</div>
+                <div class="service-item" draggable="true" data-service="efs">Amazon EFS</div>
+                <div class="service-item" draggable="true" data-service="glacier">Amazon S3 Glacier</div>
+            </div>
+            
+            <div class="definition-column" id="definitions-column">
+                <div class="column-title">Service Descriptions</div>
+                <div class="definition-item" data-service="s3">Object storage service with virtually unlimited capacity, ideal for storing and retrieving any amount of data</div>
+                <div class="definition-item" data-service="ebs">Block-level storage volumes for use with EC2 instances, providing persistent storage</div>
+                <div class="definition-item" data-service="glacier">Low-cost archival storage service designed for data that is rarely accessed</div>
+                <div class="definition-item" data-service="efs">Scalable file storage for use with EC2 instances, supporting NFS protocols</div>
+            </div>
+        </div>
+        
+        <div id="feedback" class="feedback-area"></div>
+        
+        <div class="controls">
+            <button class="check-btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="reset-btn" onclick="resetActivity()">Reset Activity</button>
+        </div>
+    </div>
+
+    <script>
+        // Store dragged item reference and matching data
+        let draggedItem = null;
+        let matchedPairs = 0;
+        const totalPairs = 4;
+        let attempts = {};
+        let timeoutIds = [];
+        
+        // Initialize attempts object
+        function initAttempts() {
+            document.querySelectorAll('.definition-item').forEach(def => {
+                attempts[def.dataset.service] = {
+                    element: def,
+                    matched: false,
+                    attempts: 0
+                };
+            });
+        }
+        
+        // Clear all pending timeouts
+        function clearAllTimeouts() {
+            timeoutIds.forEach(id => clearTimeout(id));
+            timeoutIds = [];
+        }
+        
+        // Reset incorrect items to original state
+        function resetIncorrectItems(serviceItem, definitionItem) {
+            serviceItem.classList.remove('incorrect');
+            definitionItem.classList.remove('incorrect');
+            
+            // Re-enable dragging if not matched
+            if (!serviceItem.classList.contains('matched')) {
+                serviceItem.setAttribute('draggable', 'true');
+            }
+        }
+        
+        // Add event listeners to service items
+        document.querySelectorAll('.service-item').forEach(item => {
+            item.addEventListener('dragstart', dragStart);
+            item.addEventListener('dragend', dragEnd);
+        });
+        
+        // Add event listeners to definition items
+        document.querySelectorAll('.definition-item').forEach(item => {
+            item.addEventListener('dragover', dragOver);
+            item.addEventListener('dragenter', dragEnter);
+            item.addEventListener('dragleave', dragLeave);
+            item.addEventListener('drop', drop);
+        });
+        
+        function dragStart() {
+            draggedItem = this;
+            this.classList.add('dragging');
+            
+            // Highlight potential matches
+            document.querySelectorAll('.definition-item').forEach(def => {
+                if (def.dataset.service === this.dataset.service && !attempts[def.dataset.service].matched) {
+                    def.classList.add('highlight');
+                }
+            });
+        }
+        
+        function dragEnd() {
+            this.classList.remove('dragging');
+            
+            // Remove highlights
+            document.querySelectorAll('.definition-item').forEach(def => {
+                def.classList.remove('highlight');
+            });
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+        }
+        
+        function dragEnter(e) {
+            e.preventDefault();
+            if (!attempts[this.dataset.service].matched) {
+                this.classList.add('highlight');
+            }
+        }
+        
+        function dragLeave() {
+            this.classList.remove('highlight');
+        }
+        
+        function drop() {
+            this.classList.remove('highlight');
+            
+            // If this definition is already matched correctly, do nothing
+            if (attempts[this.dataset.service].matched) return;
+            
+            // Clear any pending timeouts
+            clearAllTimeouts();
+            
+            // Check if the match is correct
+            if (this.dataset.service === draggedItem.dataset.service) {
+                // Mark as matched
+                this.classList.add('matched');
+                draggedItem.classList.add('matched');
+                
+                // Update attempts tracking
+                attempts[this.dataset.service].matched = true;
+                matchedPairs++;
+                
+                // Disable dragging for matched items
+                this.setAttribute('draggable', 'false');
+                draggedItem.setAttribute('draggable', 'false');
+                
+                // Check if all pairs are matched
+                if (matchedPairs === totalPairs) {
+                    const feedback = document.getElementById('feedback');
+                    feedback.textContent = 'Congratulations! You matched all services correctly!';
+                    feedback.classList.add('success');
+                    feedback.style.display = 'block';
+                }
+            } else {
+                // Mark as incorrect
+                this.classList.add('incorrect');
+                draggedItem.classList.add('incorrect');
+                
+                // Show feedback for incorrect attempt
+                const feedback = document.getElementById('feedback');
+                feedback.textContent = 'Incorrect match. Try again!';
+                feedback.classList.add('error');
+                feedback.style.display = 'block';
+                
+                // Set timeout to reset after 3 seconds
+                const timeoutId = setTimeout(() => {
+                    resetIncorrectItems(draggedItem, this);
+                    feedback.style.display = 'none';
+                }, 1500);
+                
+                timeoutIds.push(timeoutId);
+            }
+        }
+        
+        function checkAnswers() {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (matchedPairs === totalPairs) {
+                feedback.textContent = 'Perfect! All matches are correct!';
+                feedback.className = 'feedback-area success';
+            } else {
+                feedback.textContent = `You've matched ${matchedPairs} out of ${totalPairs} correctly. Keep trying!`;
+                feedback.className = 'feedback-area error';
+            }
+        }
+        
+        function resetActivity() {
+            // Clear all timeouts first
+            clearAllTimeouts();
+            
+            // Reset all items
+            document.querySelectorAll('.service-item, .definition-item').forEach(item => {
+                item.classList.remove('matched', 'dragging', 'highlight', 'incorrect');
+                item.setAttribute('draggable', 'true');
+            });
+            
+            // Reset counters and feedback
+            matchedPairs = 0;
+            initAttempts();
+            document.getElementById('feedback').style.display = 'none';
+            
+            // Shuffle definitions
+            const definitionsContainer = document.querySelector('.definition-column');
+            const defs = Array.from(document.querySelectorAll('.definition-column .definition-item'));
+            
+            // Fisher-Yates shuffle algorithm
+            for (let i = defs.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                definitionsContainer.insertBefore(defs[j], defs[i]);
+            }
+        }
+        
+        // Initialize the activity
+        initAttempts();
+        resetActivity();
+    </script>
+</body>
+</html>

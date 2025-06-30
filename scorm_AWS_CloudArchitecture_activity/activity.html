@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Cloud Architecture Mix & Match</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #FF9900;
+            text-align: center;
+        }
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #FF9900;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e68a00;
+        }
+        #timer {
+            font-size: 24px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #FF9900;
+        }
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .column {
+            width: 48%;
+        }
+        .item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: grab;
+            border: 1px solid #ddd;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .item.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+        .matched {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .reset-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #6c757d;
+        }
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AWS Cloud Architecture Mix & Match</h1>
+        
+        <div class="timer-controls">
+            <button onclick="startGame(30)">30 Seconds</button>
+            <button onclick="startGame(60)">60 Seconds</button>
+            <button onclick="startGame(120)">2 Minutes</button>
+        </div>
+        
+        <div id="timer">00:00</div>
+        
+        <div class="game-area">
+            <div class="column" id="left-column">
+                <!-- Concepts will be added here by JavaScript -->
+            </div>
+            <div class="column" id="right-column">
+                <!-- Definitions will be added here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="score">Matches: <span id="match-count">0</span></div>
+        <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+    </div>
+
+    <script>
+        // Game data - based on the AWS Cloud Architecture PowerPoint
+        const gameData = [
+            {
+                concept: "Operational Excellence Pillar",
+                definition: "Run and monitor systems to deliver business value, and continually improve processes."
+            },
+            {
+                concept: "Security Pillar",
+                definition: "Protect information, systems, and assets through risk assessments and mitigation."
+            },
+            {
+                concept: "Reliability Pillar",
+                definition: "Ensure workload performs correctly and consistently when expected."
+            },
+            {
+                concept: "Performance Efficiency Pillar",
+                definition: "Use IT resources efficiently to meet system requirements as demand changes."
+            },
+            {
+                concept: "Cost Optimization Pillar",
+                definition: "Avoid unnecessary costs while meeting business needs."
+            },
+            {
+                concept: "AWS Trusted Advisor",
+                definition: "Online tool providing real-time guidance to follow AWS best practices."
+            },
+            {
+                concept: "High Availability",
+                definition: "System can withstand degradation while remaining available with minimal downtime."
+            },
+            {
+                concept: "Fault Tolerance",
+                definition: "Built-in redundancy allowing components to remain operational during failures."
+            },
+            {
+                concept: "Multi-Factor Authentication (MFA)",
+                definition: "Security measure requiring multiple forms of verification for access."
+            },
+            {
+                concept: "Well-Architected Framework",
+                definition: "AWS guide for designing secure, high-performing, resilient, and efficient infrastructures."
+            }
+        ];
+
+        let timer;
+        let timeLeft = 0;
+        let gameActive = false;
+        let matches = 0;
+        let selectedItem = null;
+        let matchedPairs = 0;
+
+        // Initialize the game
+        function initGame() {
+            const leftColumn = document.getElementById('left-column');
+            const rightColumn = document.getElementById('right-column');
+            
+            // Clear columns
+            leftColumn.innerHTML = '';
+            rightColumn.innerHTML = '';
+            
+            // Shuffle the game data
+            const shuffledData = [...gameData].sort(() => Math.random() - 0.5);
+            
+            // Create concept items (left column)
+            shuffledData.forEach((item, index) => {
+                const conceptElement = document.createElement('div');
+                conceptElement.className = 'item';
+                conceptElement.textContent = item.concept;
+                conceptElement.dataset.id = index;
+                conceptElement.draggable = true;
+                conceptElement.addEventListener('dragstart', dragStart);
+                conceptElement.addEventListener('dragend', dragEnd);
+                leftColumn.appendChild(conceptElement);
+            });
+            
+            // Create definition items (right column) - shuffled separately
+            [...shuffledData].sort(() => Math.random() - 0.5).forEach((item, index) => {
+                const definitionElement = document.createElement('div');
+                definitionElement.className = 'item';
+                definitionElement.textContent = item.definition;
+                definitionElement.dataset.id = shuffledData.findIndex(x => x.definition === item.definition);
+                definitionElement.addEventListener('dragover', dragOver);
+                definitionElement.addEventListener('dragenter', dragEnter);
+                definitionElement.addEventListener('dragleave', dragLeave);
+                definitionElement.addEventListener('drop', drop);
+                rightColumn.appendChild(definitionElement);
+            });
+            
+            // Reset match counter
+            matches = 0;
+            matchedPairs = 0;
+            document.getElementById('match-count').textContent = matches;
+        }
+
+        // Timer functions
+        function startGame(seconds) {
+            if (gameActive) return;
+            
+            resetGame();
+            gameActive = true;
+            timeLeft = seconds;
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color when time is running low
+            if (timeLeft <= 10) {
+                document.getElementById('timer').style.color = '#dc3545';
+            } else {
+                document.getElementById('timer').style.color = '#FF9900';
+            }
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            gameActive = false;
+            alert(`Time's up! You made ${matches} correct matches.`);
+        }
+
+        function resetGame() {
+            clearInterval(timer);
+            gameActive = false;
+            timeLeft = 0;
+            updateTimerDisplay();
+            initGame();
+        }
+
+        // Drag and drop functions
+        function dragStart(e) {
+            if (!gameActive) {
+                e.preventDefault();
+                return;
+            }
+            selectedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.dataset.id);
+        }
+
+        function dragEnd() {
+            this.classList.remove('dragging');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dragEnter(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        }
+
+        function dragLeave() {
+            this.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (!selectedItem || !gameActive) return;
+            
+            const draggedId = selectedItem.dataset.id;
+            const targetId = this.dataset.id;
+            
+            // Clear all incorrect markings first
+            document.querySelectorAll('.incorrect').forEach(item => {
+                item.classList.remove('incorrect');
+            });
+            
+            // Clear any previous drag-over highlights
+            document.querySelectorAll('.drag-over').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+            
+            if (draggedId === targetId) {
+                // Correct match - mark both left and right items
+                selectedItem.classList.add('matched');
+                this.classList.add('matched');
+                
+                // Remove from draggable pool
+                selectedItem.draggable = false;
+                this.style.cursor = 'default';
+                selectedItem.style.cursor = 'default';
+                
+                matches++;
+                matchedPairs++;
+                document.getElementById('match-count').textContent = matches;
+                
+                if (matchedPairs === gameData.length) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        alert(`Congratulations! You matched all pairs with ${timeLeft} seconds remaining!`);
+                    }, 500);
+                }
+            } else {
+                // Incorrect match - briefly show red
+                selectedItem.classList.add('incorrect');
+                this.classList.add('incorrect');
+                setTimeout(() => {
+                    selectedItem.classList.remove('incorrect');
+                    this.classList.remove('incorrect');
+                }, 500);
+            }
+            
+            selectedItem = null;
+        }
+        // Initialize the game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>

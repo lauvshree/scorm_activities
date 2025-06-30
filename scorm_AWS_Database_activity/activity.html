@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Databases Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f9fc;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #FF9900;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .quiz-instructions {
+            background-color: #e1f0fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #FF9900;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0073bb;
+        }
+        .options {
+            margin-left: 20px;
+        }
+        .option {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block; /* Ensures each option is on its own line */
+        }
+        .option:hover {
+            background-color: #e9ecef;
+        }
+        .option input {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .correct {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .submit-btn, .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .submit-btn {
+            background-color: #FF9900;
+            color: white;
+            margin-right: 10px;
+        }
+        .submit-btn:hover {
+            background-color: #e68a00;
+        }
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+        .score-display {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .aws-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="aws-logo">
+        <img src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png" alt="Powered by AWS" width="150">
+    </div>
+    
+    <div class="container">
+        <h1>AWS Databases Quiz</h1>
+        
+        <div class="quiz-instructions">
+            <p><strong>Instructions:</strong> Select the correct answer for each question. After submitting, incorrect answers will be marked in red and correct answers in green. Use the reset button to try again.</p>
+        </div>
+        
+        <form id="quiz-form">
+            <div class="question" id="q1">
+                <p><strong>1. Which AWS service is a fully-managed NoSQL database service?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q1" value="a"> Amazon RDS</label>
+                    <label class="option"><input type="radio" name="q1" value="b"> Amazon DynamoDB</label>
+                    <label class="option"><input type="radio" name="q1" value="c"> Amazon Aurora</label>
+                    <label class="option"><input type="radio" name="q1" value="d"> Amazon Redshift</label>
+                </div>
+                <div class="feedback" id="fb1"></div>
+            </div>
+            
+            <div class="question" id="q2">
+                <p><strong>2. Which Amazon RDS feature provides high availability by maintaining a standby replica in a different Availability Zone?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q2" value="a"> Read Replicas</label>
+                    <label class="option"><input type="radio" name="q2" value="b"> Multi-AZ Deployment</label>
+                    <label class="option"><input type="radio" name="q2" value="c"> Elastic Load Balancing</label>
+                    <label class="option"><input type="radio" name="q2" value="d"> Auto Scaling</label>
+                </div>
+                <div class="feedback" id="fb2"></div>
+            </div>
+            
+            <div class="question" id="q3">
+                <p><strong>3. Which database service is optimized for data warehousing and analytics workloads?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q3" value="a"> Amazon DynamoDB</label>
+                    <label class="option"><input type="radio" name="q3" value="b"> Amazon Aurora</label>
+                    <label class="option"><input type="radio" name="q3" value="c"> Amazon Redshift</label>
+                    <label class="option"><input type="radio" name="q3" value="d"> Amazon RDS</label>
+                </div>
+                <div class="feedback" id="fb3"></div>
+            </div>
+            
+            <div class="question" id="q4">
+                <p><strong>4. What is the primary key structure in Amazon DynamoDB?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q4" value="a"> Only partition keys</label>
+                    <label class="option"><input type="radio" name="q4" value="b"> Only composite keys</label>
+                    <label class="option"><input type="radio" name="q4" value="c"> Either partition keys or partition+sort keys</label>
+                    <label class="option"><input type="radio" name="q4" value="d"> Only foreign keys</label>
+                </div>
+                <div class="feedback" id="fb4"></div>
+            </div>
+            
+            <div class="question" id="q5">
+                <p><strong>5. Which AWS database service is compatible with both MySQL and PostgreSQL?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q5" value="a"> Amazon RDS</label>
+                    <label class="option"><input type="radio" name="q5" value="b"> Amazon Aurora</label>
+                    <label class="option"><input type="radio" name="q5" value="c"> Amazon Redshift</label>
+                    <label class="option"><input type="radio" name="q5" value="d"> Both A and B</label>
+                </div>
+                <div class="feedback" id="fb5"></div>
+            </div>
+            
+            <div class="question" id="q6">
+                <p><strong>6. When would you choose Amazon RDS over Amazon DynamoDB?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q6" value="a"> When you need complex transactions and queries</label>
+                    <label class="option"><input type="radio" name="q6" value="b"> When you need massive read/write rates (150,000+ writes/second)</label>
+                    <label class="option"><input type="radio" name="q6" value="c"> When you need simple GET/PUT requests</label>
+                    <label class="option"><input type="radio" name="q6" value="d"> When you need automatic sharding</label>
+                </div>
+                <div class="feedback" id="fb6"></div>
+            </div>
+            
+            <div class="question" id="q7">
+                <p><strong>7. Which feature allows you to offload read queries from your primary Amazon RDS database?</strong></p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q7" value="a"> Multi-AZ Deployment</label>
+                    <label class="option"><input type="radio" name="q7" value="b"> Read Replicas</label>
+                    <label class="option"><input type="radio" name="q7" value="c"> Elastic Load Balancing</label>
+                    <label class="option"><input type="radio" name="q7" value="d"> Auto Scaling</label>
+                </div>
+                <div class="feedback" id="fb7"></div>
+            </div>
+            
+            <div class="controls">
+                <button type="button" class="submit-btn" onclick="checkAnswers()">Submit Quiz</button>
+                <button type="button" class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+            </div>
+        </form>
+        
+        <div id="score-display" class="score-display"></div>
+    </div>
+
+    <script>
+        // Correct answers
+        const correctAnswers = {
+            q1: "b",
+            q2: "b",
+            q3: "c",
+            q4: "c",
+            q5: "d",
+            q6: "a",
+            q7: "b"
+        };
+
+        // Explanations for answers
+        const explanations = {
+            q1: "Amazon DynamoDB is AWS's fully managed NoSQL database service, offering seamless scalability and consistent performance.",
+            q2: "Multi-AZ Deployment maintains a synchronous standby replica in a different Availability Zone for high availability.",
+            q3: "Amazon Redshift is optimized for data warehousing and analytics with its columnar storage and parallel processing architecture.",
+            q4: "DynamoDB supports two primary key structures: simple (partition key only) or composite (partition key + sort key).",
+            q5: "Amazon Aurora is compatible with both MySQL and PostgreSQL, and Amazon RDS supports these engines plus others.",
+            q6: "Amazon RDS is better suited for applications requiring complex transactions and queries, while DynamoDB excels at massive scale simple operations.",
+            q7: "Read Replicas allow you to offload read traffic from your primary database instance to one or more replicas."
+        };
+
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionId = `q${i}`;
+                const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                const questionElement = document.getElementById(questionId);
+                const feedbackElement = document.getElementById(`fb${i}`);
+                
+                if (selectedOption) {
+                    if (selectedOption.value === correctAnswers[questionId]) {
+                        // Correct answer
+                        questionElement.classList.add('correct');
+                        questionElement.classList.remove('incorrect');
+                        feedbackElement.textContent = "Correct! " + explanations[questionId];
+                        feedbackElement.style.display = 'block';
+                        score++;
+                    } else {
+                        // Incorrect answer
+                        questionElement.classList.add('incorrect');
+                        questionElement.classList.remove('correct');
+                        feedbackElement.textContent = "Incorrect. " + explanations[questionId];
+                        feedbackElement.style.display = 'block';
+                    }
+                } else {
+                    // No answer selected
+                    questionElement.classList.add('incorrect');
+                    feedbackElement.textContent = "You didn't select an answer. " + explanations[questionId];
+                    feedbackElement.style.display = 'block';
+                }
+            }
+            
+            // Display score
+            const scoreDisplay = document.getElementById('score-display');
+            scoreDisplay.textContent = `You scored ${score} out of ${totalQuestions}!`;
+            scoreDisplay.style.display = 'block';
+            
+            if (score === totalQuestions) {
+                scoreDisplay.classList.add('correct');
+                scoreDisplay.classList.remove('incorrect');
+            } else {
+                scoreDisplay.classList.add('incorrect');
+                scoreDisplay.classList.remove('correct');
+            }
+        }
+
+        function resetQuiz() {
+            // Reset all selections and styling
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            document.querySelectorAll('.question').forEach(question => {
+                question.classList.remove('correct', 'incorrect');
+            });
+            
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            document.getElementById('score-display').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

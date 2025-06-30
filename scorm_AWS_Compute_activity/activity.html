@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Compute Services</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1,h6 {
+            color: #FF9900; /* AWS orange */
+            text-align: center;
+        }
+        .activity-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            min-height: 60px;
+        }
+        .blank {
+            display: inline-block;
+            width: 150px;
+            height: 30px;
+            border: 2px dashed #aaa;
+            border-radius: 4px;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+        .blank.highlight {
+            background-color: #fff3cd;
+        }
+        .blank.filled {
+            border: 2px solid #28a745;
+            background-color: #d4edda;
+        }
+        .answer-option {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            cursor: grab;
+            user-select: none;
+        }
+        .answer-option.dragging {
+            opacity: 0.5;
+        }
+        .answers-pool {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .check-btn {
+            background-color: #FF9900;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+        }
+        .check-btn:hover {
+            background-color: #e68a00;
+        }
+        .feedback {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            display: none;
+            text-align: center;
+        }
+        .correct-feedback {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .incorrect-feedback {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .aws-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="aws-logo">
+        <img src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png" alt="Powered by AWS" width="150">
+    </div>
+    
+    <h1>AWS Compute Services</h1>
+    <h6><i>Drag & Drop Activity</i></h6>
+    
+    <div class="activity-container">
+        <p><strong>Instructions:</strong> Drag the correct answers from the pool below and drop them into the blank spaces.</p>
+        
+        <div class="question" id="q1">
+            <p>1. <strong>Amazon EC2</strong> provides virtual machines in the cloud called 
+            <div class="blank" data-answer="instances"></div>. 
+            </p>
+        </div>
+        
+        <div class="question" id="q2">
+            <p>2. The template used to create an EC2 instance is called an 
+            <div class="blank" data-answer="AMI"></div> (Amazon Machine Image). 
+            </p>
+        </div>
+        
+        <div class="question" id="q3">
+            <p>3. <strong>AWS Lambda</strong> is a <div class="blank" data-answer="serverless"></div> compute service that runs code without provisioning servers. 
+            </p>
+        </div>
+        
+        <div class="question" id="q4">
+            <p>4. <strong>Amazon ECS</strong> orchestrates the running of <div class="blank" data-answer="Docker containers"></div>. 
+            </p>
+        </div>
+        
+        <div class="question" id="q5">
+            <p>5. The four pillars of EC2 cost optimization are: Right size, Increase elasticity, Optimal pricing model, and 
+            <div class="blank" data-answer="Optimize storage choices"></div>. 
+            </p>
+        </div>
+        
+        <div class="question" id="q6">
+            <p>6. <strong>AWS Elastic Beanstalk</strong> supports applications written in .NET, PHP, Node.js, Python, Ruby, Go, and 
+            <div class="blank" data-answer="Java"></div>. 
+            </p>
+        </div>
+        
+        <div class="answers-pool" id="answers-pool">
+            <div class="answer-option" draggable="true">instances</div>
+            <div class="answer-option" draggable="true">AMI</div>
+            <div class="answer-option" draggable="true">serverless</div>
+            <div class="answer-option" draggable="true">Docker containers</div>
+            <div class="answer-option" draggable="true">Optimize storage choices</div>
+            <div class="answer-option" draggable="true">Java</div>
+            <div class="answer-option" draggable="true">EC2</div>
+            <div class="answer-option" draggable="true">virtual machines</div>
+            <div class="answer-option" draggable="true">Kubernetes</div>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div style="text-align: center;">
+            <button class="check-btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="reset-btn" onclick="resetActivity()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // Store dragged item reference
+        let draggedItem = null;
+        
+        // Add event listeners to answer options
+        document.querySelectorAll('.answer-option').forEach(item => {
+            item.addEventListener('dragstart', dragStart);
+            item.addEventListener('dragend', dragEnd);
+        });
+        
+        // Add event listeners to blank spaces
+        document.querySelectorAll('.blank').forEach(blank => {
+            blank.addEventListener('dragover', dragOver);
+            blank.addEventListener('dragenter', dragEnter);
+            blank.addEventListener('dragleave', dragLeave);
+            blank.addEventListener('drop', drop);
+        });
+        
+        function dragStart() {
+            draggedItem = this;
+            this.classList.add('dragging');
+            
+            // Highlight potential correct blanks
+            document.querySelectorAll('.blank').forEach(blank => {
+                if (blank.dataset.answer === this.textContent && !blank.hasChildNodes()) {
+                    blank.classList.add('highlight');
+                }
+            });
+        }
+        
+        function dragEnd() {
+            this.classList.remove('dragging');
+            
+            // Remove highlights
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.classList.remove('highlight');
+            });
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+        }
+        
+        function dragEnter(e) {
+            e.preventDefault();
+            if (this.dataset.answer === draggedItem.textContent && !this.hasChildNodes()) {
+                this.classList.add('highlight');
+            }
+        }
+        
+        function dragLeave() {
+            this.classList.remove('highlight');
+        }
+        
+        function drop() {
+            this.classList.remove('highlight');
+            
+            // Only allow drop if blank is empty and answer is correct
+            if (!this.hasChildNodes() && this.dataset.answer === draggedItem.textContent) {
+                // Create a new element to place in the blank (so original remains in pool)
+                const answerClone = draggedItem.cloneNode(true);
+                answerClone.classList.remove('answer-option', 'dragging');
+                answerClone.setAttribute('draggable', 'false');
+                answerClone.style.cursor = 'default';
+                answerClone.style.backgroundColor = '#d4edda';
+                
+                // Add remove functionality
+                answerClone.addEventListener('click', function() {
+                    this.remove();
+                    // Return the option to the pool
+                    const originalOption = document.createElement('div');
+                    originalOption.className = 'answer-option';
+                    originalOption.setAttribute('draggable', 'true');
+                    originalOption.textContent = this.textContent;
+                    originalOption.addEventListener('dragstart', dragStart);
+                    originalOption.addEventListener('dragend', dragEnd);
+                    document.getElementById('answers-pool').appendChild(originalOption);
+                });
+                
+                this.appendChild(answerClone);
+                this.classList.add('filled');
+            }
+        }
+        
+        function checkAnswers() {
+            let correctCount = 0;
+            const totalBlanks = document.querySelectorAll('.blank').length;
+            
+            document.querySelectorAll('.blank').forEach(blank => {
+                if (blank.hasChildNodes() && blank.firstChild.textContent === blank.dataset.answer) {
+                    correctCount++;
+                }
+            });
+            
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (correctCount === totalBlanks) {
+                feedback.textContent = `Perfect! You got all ${totalBlanks} answers correct!`;
+                feedback.className = 'feedback correct-feedback';
+            } else {
+                feedback.textContent = `You got ${correctCount} out of ${totalBlanks} correct. Keep trying!`;
+                feedback.className = 'feedback incorrect-feedback';
+            }
+        }
+        
+        function resetActivity() {
+            // Clear all blanks
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.classList.remove('filled', 'highlight');
+                while (blank.firstChild) {
+                    blank.removeChild(blank.firstChild);
+                }
+            });
+            
+            // Clear feedback
+            document.getElementById('feedback').style.display = 'none';
+            
+            // Rebuild answer pool (in case some options were used)
+            const pool = document.getElementById('answers-pool');
+            pool.innerHTML = '';
+            
+            const answers = [
+                'instances', 'AMI', 'serverless', 
+                'Docker containers', 'Optimize storage choices', 'Docker',
+                'EC2', 'virtual machines', 'Kubernetes'
+            ];
+            
+            answers.forEach(answer => {
+                const option = document.createElement('div');
+                option.className = 'answer-option';
+                option.setAttribute('draggable', 'true');
+                option.textContent = answer;
+                option.addEventListener('dragstart', dragStart);
+                option.addEventListener('dragend', dragEnd);
+                pool.appendChild(option);
+            });
+        }
+    </script>
+</body>
+</html>
