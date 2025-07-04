@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Phishing Awareness Quiz</title>
   <style>
-    /* Your CSS is perfectly fine! */
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #74ebd5, #ACB6E5);
@@ -71,12 +70,13 @@
     .feedback {
       margin-top: 8px;
       font-weight: bold;
+      display: none;
     }
     .correct {
-      color: #28a745;
+      background-color: #d4edda !important;
     }
     .incorrect {
-      color: #dc3545;
+      background-color: #f8d7da !important;
     }
     .result {
       text-align: center;
@@ -97,33 +97,31 @@
 
   <script>
     const quizData = [
-      { question: "What is phishing?", options: ["A method of catching fish using the internet","A cyberattack that tricks individuals into revealing personal information","A type of firewall","A secure way to communicate online"], answer: 1 },
-      { question: "Which of the following is a common sign of a phishing email?", options: ["Personalized greeting with your full name","Email from a known contact with expected content","Urgent request for personal information","Proper grammar and spelling throughout"], answer: 2 },
-      { question: "What should you do if you suspect an email is a phishing attempt?", options: ["Click on the link to verify its authenticity","Reply to the email asking for more details","Delete the email without clicking any links","Forward the email to friends to warn them"], answer: 2 },
-      { question: "Phishing attacks can happen through:", options: ["Email","Text messages","Social media","All of the above"], answer: 3 },
-      { question: "Which is the safest action when receiving a suspicious link?", options: ["Click and see where it goes","Copy and paste it into your browser","Hover over the link to check the URL","Forward it to coworkers"], answer: 2 },
-      { question: "A legitimate company will never:", options: ["Send you a thank you email","Ask for your password via email","Provide account updates","Have customer support"], answer: 1 },
-      { question: "What is spear phishing?", options: ["Phishing attacks targeting a specific individual or company","Phishing emails about fishing gear","Phishing using spear-shaped icons","A way to test antivirus software"], answer: 0 },
-      { question: "If you clicked a phishing link, you should:", options: ["Do nothing","Provide your information to be safe","Change your passwords and report it","Ignore it if your computer seems fine"], answer: 2 },
-      { question: "Which of these helps protect against phishing?", options: ["Using the same password everywhere","Two-factor authentication","Sharing login details with friends","Clicking links quickly"], answer: 1 },
-      { question: "Who can be targeted by phishing attacks?", options: ["Only celebrities","Only large companies","Anyone using the internet","Only teenagers"], answer: 2 }, <!-- ✅ Fixed: Added missing comma here -->
-      { question: "Which technique do attackers use to make phishing emails appear to come from legitimate domains?", options: ["Domain spoofing","Link shorteners","IP masking","URL obfuscation"], answer: 0 },
-      { question: "How can you verify the legitimacy of a suspicious email attachment?", options: ["Download it and scan with antivirus","Open it in incognito mode","Contact the supposed sender through another channel","Reply and ask if it's safe"], answer: 2 },
-      { question: "What does HTTPS in a website URL indicate when checking for phishing?", options: ["The site is always safe","Data is encrypted but the site could still be fake","The site is government-approved","There is no risk of phishing"], answer: 1 },
-      { question: "What is a common tactic used in spear phishing?", options: ["Generic greetings","Urgent requests with personalized info","Randomized mass emails","Public announcements"], answer: 1 },
-      { question: "Which policy can help reduce phishing risks in an organization?", options: ["Disabling email altogether","Enforcing mandatory password reuse","Implementing email filtering and employee training","Blocking all websites"], answer: 2 },
-      { question: "How can you identify a homograph attack in a phishing link?", options: ["It always has HTTPS","Check for unusual characters that look like standard letters","It will have a .gov domain","The link is extremely short"], answer: 1 },
-      { question: "Which security practice helps detect phishing attempts proactively?", options: ["Regular phishing simulation tests","Using default passwords","Allowing macros in all documents","Ignoring security updates"], answer: 0 },
-      { question: "Why is hovering over a link useful in identifying phishing?", options: ["It disables the link","It reveals the true URL","It blocks phishing emails","It encrypts the link"], answer: 1 },
-      { question: "What should you do if you receive a phishing email at work?", options: ["Report it to IT/security immediately","Forward it to friends","Mark it as important","Save it for later"], answer: 0 },
-      { question: "Why are social engineering attacks like phishing often successful?", options: ["They use complex malware exclusively","They rely on human psychology and trust","They require physical access","They only target outdated systems"], answer: 1 }
+      { question: "What is phishing?", options: ["A method of catching fish using the internet","A cyberattack that tricks individuals into revealing personal information","A type of firewall","A secure way to communicate online"], answer: 1, explanation: "Phishing is a fraudulent attempt to obtain sensitive information by disguising as a trustworthy entity." },
+      { question: "Which of the following is a common sign of a phishing email?", options: ["Personalized greeting with your full name","Email from a known contact with expected content","Urgent request for personal information","Proper grammar and spelling throughout"], answer: 2, explanation: "Phishing emails often create a sense of urgency to trick recipients into disclosing information." },
+      { question: "What should you do if you suspect an email is a phishing attempt?", options: ["Click on the link to verify its authenticity","Reply to the email asking for more details","Delete the email without clicking any links","Forward the email to friends to warn them"], answer: 2, explanation: "Never click or reply—delete the email to avoid risk." },
+      { question: "Phishing attacks can happen through:", options: ["Email","Text messages","Social media","All of the above"], answer: 3, explanation: "Phishing isn't limited to email; it spans across digital communication channels." },
+      { question: "Which is the safest action when receiving a suspicious link?", options: ["Click and see where it goes","Copy and paste it into your browser","Hover over the link to check the URL","Forward it to coworkers"], answer: 2, explanation: "Hovering reveals the true destination without activating the link." },
+      { question: "A legitimate company will never:", options: ["Send you a thank you email","Ask for your password via email","Provide account updates","Have customer support"], answer: 1, explanation: "Reputable companies never ask for sensitive data via email." },
+      { question: "What is spear phishing?", options: ["Phishing attacks targeting a specific individual or company","Phishing emails about fishing gear","Phishing using spear-shaped icons","A way to test antivirus software"], answer: 0, explanation: "Spear phishing is targeted and personalized, often appearing more convincing." },
+      { question: "If you clicked a phishing link, you should:", options: ["Do nothing","Provide your information to be safe","Change your passwords and report it","Ignore it if your computer seems fine"], answer: 2, explanation: "Immediate action helps prevent data loss or further compromise." },
+      { question: "Which of these helps protect against phishing?", options: ["Using the same password everywhere","Two-factor authentication","Sharing login details with friends","Clicking links quickly"], answer: 1, explanation: "2FA adds an extra layer of security to your accounts." },
+      { question: "Who can be targeted by phishing attacks?", options: ["Only celebrities","Only large companies","Anyone using the internet","Only teenagers"], answer: 2, explanation: "Phishing targets everyone, regardless of status or occupation." },
+      { question: "Which technique do attackers use to make phishing emails appear to come from legitimate domains?", options: ["Domain spoofing","Link shorteners","IP masking","URL obfuscation"], answer: 0, explanation: "Spoofing mimics a legitimate domain to deceive the recipient." },
+      { question: "How can you verify the legitimacy of a suspicious email attachment?", options: ["Download it and scan with antivirus","Open it in incognito mode","Contact the supposed sender through another channel","Reply and ask if it's safe"], answer: 2, explanation: "Independent verification ensures authenticity." },
+      { question: "What does HTTPS in a website URL indicate when checking for phishing?", options: ["The site is always safe","Data is encrypted but the site could still be fake","The site is government-approved","There is no risk of phishing"], answer: 1, explanation: "HTTPS ensures encryption, but doesn't confirm legitimacy." },
+      { question: "What is a common tactic used in spear phishing?", options: ["Generic greetings","Urgent requests with personalized info","Randomized mass emails","Public announcements"], answer: 1, explanation: "Personalization and urgency make spear phishing effective." },
+      { question: "Which policy can help reduce phishing risks in an organization?", options: ["Disabling email altogether","Enforcing mandatory password reuse","Implementing email filtering and employee training","Blocking all websites"], answer: 2, explanation: "Training and filters together reduce vulnerability." },
+      { question: "How can you identify a homograph attack in a phishing link?", options: ["It always has HTTPS","Check for unusual characters that look like standard letters","It will have a .gov domain","The link is extremely short"], answer: 1, explanation: "Look-alike characters are used to spoof legitimate URLs." },
+      { question: "Which security practice helps detect phishing attempts proactively?", options: ["Regular phishing simulation tests","Using default passwords","Allowing macros in all documents","Ignoring security updates"], answer: 0, explanation: "Simulations prepare employees to recognize threats." },
+      { question: "Why is hovering over a link useful in identifying phishing?", options: ["It disables the link","It reveals the true URL","It blocks phishing emails","It encrypts the link"], answer: 1, explanation: "Previewing the destination helps avoid malicious sites." },
+      { question: "What should you do if you receive a phishing email at work?", options: ["Report it to IT/security immediately","Forward it to friends","Mark it as important","Save it for later"], answer: 0, explanation: "Timely reporting helps prevent spread and damage." },
+      { question: "Why are social engineering attacks like phishing often successful?", options: ["They use complex malware exclusively","They rely on human psychology and trust","They require physical access","They only target outdated systems"], answer: 1, explanation: "Manipulating human behavior is key to social engineering." }
     ];
 
     const quizContainer = document.getElementById('quiz');
     const submitBtn = document.getElementById('submit');
     const resultContainer = document.getElementById('result');
-
-    let score = 0;
 
     quizData.forEach((q, index) => {
       const questionDiv = document.createElement('div');
@@ -153,25 +151,31 @@
       questionDiv.appendChild(feedback);
 
       quizContainer.appendChild(questionDiv);
-
-      optionsDiv.addEventListener('change', (e) => {
-        const selected = parseInt(e.target.value);
-        if (selected === q.answer) {
-          feedback.textContent = '✅ Correct!';
-          feedback.className = 'feedback correct';
-        } else {
-          feedback.textContent = '❌ Try again!';
-          feedback.className = 'feedback incorrect';
-        }
-      });
     });
 
     submitBtn.addEventListener('click', () => {
-      score = 0;
+      let score = 0;
       quizData.forEach((q, index) => {
-        const selected = document.querySelector(`input[name=\"question${index}\"]:checked`);
-        if (selected && parseInt(selected.value) === q.answer) {
-          score++;
+        const selected = document.querySelector(`input[name="question${index}"]:checked`);
+        const feedback = quizContainer.children[index].querySelector('.feedback');
+        const inputs = document.querySelectorAll(`input[name="question${index}"]`);
+
+        inputs.forEach(input => input.parentElement.classList.remove('correct', 'incorrect'));
+
+        if (selected) {
+          const selectedValue = parseInt(selected.value);
+          const selectedLabel = selected.parentElement;
+          const correctInput = document.querySelector(`input[name="question${index}"][value="${q.answer}"]`);
+
+          if (selectedValue === q.answer) {
+            score++;
+            selectedLabel.classList.add('correct');
+          } else {
+            selectedLabel.classList.add('incorrect');
+            correctInput.parentElement.classList.add('correct');
+            feedback.textContent = `Explanation: ${q.explanation}`;
+            feedback.style.display = 'block';
+          }
         }
       });
       resultContainer.textContent = `🎉 You got ${score} out of ${quizData.length} correct!`;
