@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phishing Awareness Quiz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      min-height: 100vh;
+    }
+    .quiz-container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .quiz-container h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .question {
+      margin-bottom: 25px;
+      background: #f9f9f9;
+      border-left: 6px solid #6a11cb;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .question p {
+      margin: 0 0 10px;
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      background: #e1ecf4;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .options label:hover {
+      background: #d0e7f9;
+    }
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+    button {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+      display: block;
+      margin: 20px auto 0;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
+    }
+    .feedback {
+      margin-top: 8px;
+      font-weight: bold;
+    }
+    .correct {
+      color: #28a745;
+    }
+    .incorrect {
+      color: #dc3545;
+    }
+    .result {
+      text-align: center;
+      font-size: 1.4em;
+      margin-top: 30px;
+      color: #333;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Phishing Awareness Quiz</h1>
+    <div id="quiz"></div>
+    <button id="submit">Submit Quiz</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "What is phishing?", options: ["A method of catching fish using the internet","A cyberattack that tricks individuals into revealing personal information","A type of firewall","A secure way to communicate online"], answer: 1 },
+      { question: "Which of the following is a common sign of a phishing email?", options: ["Personalized greeting with your full name","Email from a known contact with expected content","Urgent request for personal information","Proper grammar and spelling throughout"], answer: 2 },
+      { question: "What should you do if you suspect an email is a phishing attempt?", options: ["Click on the link to verify its authenticity","Reply to the email asking for more details","Delete the email without clicking any links","Forward the email to friends to warn them"], answer: 2 },
+      { question: "Phishing attacks can happen through:", options: ["Email","Text messages","Social media","All of the above"], answer: 3 },
+      { question: "Which is the safest action when receiving a suspicious link?", options: ["Click and see where it goes","Copy and paste it into your browser","Hover over the link to check the URL","Forward it to coworkers"], answer: 2 },
+      { question: "A legitimate company will never:", options: ["Send you a thank you email","Ask for your password via email","Provide account updates","Have customer support"], answer: 1 },
+      { question: "What is spear phishing?", options: ["Phishing attacks targeting a specific individual or company","Phishing emails about fishing gear","Phishing using spear-shaped icons","A way to test antivirus software"], answer: 0 },
+      { question: "If you clicked a phishing link, you should:", options: ["Do nothing","Provide your information to be safe","Change your passwords and report it","Ignore it if your computer seems fine"], answer: 2 },
+      { question: "Which of these helps protect against phishing?", options: ["Using the same password everywhere","Two-factor authentication","Sharing login details with friends","Clicking links quickly"], answer: 1 },
+      { question: "Who can be targeted by phishing attacks?", options: ["Only celebrities","Only large companies","Anyone using the internet","Only teenagers"], answer: 2 }
+    ];
+
+    const quizContainer = document.getElementById('quiz');
+    const submitBtn = document.getElementById('submit');
+    const resultContainer = document.getElementById('result');
+
+    let score = 0;
+
+    quizData.forEach((q, index) => {
+      const questionDiv = document.createElement('div');
+      questionDiv.classList.add('question');
+
+      const questionText = document.createElement('p');
+      questionText.textContent = `${index + 1}. ${q.question}`;
+      questionDiv.appendChild(questionText);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.classList.add('options');
+
+      q.options.forEach((option, i) => {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = `question${index}`;
+        input.value = i;
+        label.appendChild(input);
+        label.append(option);
+        optionsDiv.appendChild(label);
+      });
+
+      const feedback = document.createElement('div');
+      feedback.classList.add('feedback');
+      questionDiv.appendChild(optionsDiv);
+      questionDiv.appendChild(feedback);
+
+      quizContainer.appendChild(questionDiv);
+
+      optionsDiv.addEventListener('change', (e) => {
+        const selected = parseInt(e.target.value);
+        if (selected === q.answer) {
+          feedback.textContent = '✅ Correct!';
+          feedback.className = 'feedback correct';
+        } else {
+          feedback.textContent = '❌ Try again!';
+          feedback.className = 'feedback incorrect';
+        }
+      });
+    });
+
+    submitBtn.addEventListener('click', () => {
+      score = 0;
+      quizData.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="question${index}"]:checked`);
+        if (selected && parseInt(selected.value) === q.answer) {
+          score++;
+        }
+      });
+      resultContainer.textContent = `🎉 You got ${score} out of ${quizData.length} correct!`;
+    });
+  </script>
+</body>
+</html>
