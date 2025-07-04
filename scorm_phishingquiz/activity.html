@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Phishing Awareness Quiz</title>
   <style>
+    /* Your CSS is perfectly fine! */
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #74ebd5, #ACB6E5);
@@ -105,7 +106,7 @@
       { question: "What is spear phishing?", options: ["Phishing attacks targeting a specific individual or company","Phishing emails about fishing gear","Phishing using spear-shaped icons","A way to test antivirus software"], answer: 0 },
       { question: "If you clicked a phishing link, you should:", options: ["Do nothing","Provide your information to be safe","Change your passwords and report it","Ignore it if your computer seems fine"], answer: 2 },
       { question: "Which of these helps protect against phishing?", options: ["Using the same password everywhere","Two-factor authentication","Sharing login details with friends","Clicking links quickly"], answer: 1 },
-      { question: "Who can be targeted by phishing attacks?", options: ["Only celebrities","Only large companies","Anyone using the internet","Only teenagers"], answer: 2 }
+      { question: "Who can be targeted by phishing attacks?", options: ["Only celebrities","Only large companies","Anyone using the internet","Only teenagers"], answer: 2 }, <!-- ✅ Fixed: Added missing comma here -->
       { question: "Which technique do attackers use to make phishing emails appear to come from legitimate domains?", options: ["Domain spoofing","Link shorteners","IP masking","URL obfuscation"], answer: 0 },
       { question: "How can you verify the legitimacy of a suspicious email attachment?", options: ["Download it and scan with antivirus","Open it in incognito mode","Contact the supposed sender through another channel","Reply and ask if it's safe"], answer: 2 },
       { question: "What does HTTPS in a website URL indicate when checking for phishing?", options: ["The site is always safe","Data is encrypted but the site could still be fake","The site is government-approved","There is no risk of phishing"], answer: 1 },
@@ -117,6 +118,7 @@
       { question: "What should you do if you receive a phishing email at work?", options: ["Report it to IT/security immediately","Forward it to friends","Mark it as important","Save it for later"], answer: 0 },
       { question: "Why are social engineering attacks like phishing often successful?", options: ["They use complex malware exclusively","They rely on human psychology and trust","They require physical access","They only target outdated systems"], answer: 1 }
     ];
+
     const quizContainer = document.getElementById('quiz');
     const submitBtn = document.getElementById('submit');
     const resultContainer = document.getElementById('result');
@@ -167,7 +169,7 @@
     submitBtn.addEventListener('click', () => {
       score = 0;
       quizData.forEach((q, index) => {
-        const selected = document.querySelector(`input[name="question${index}"]:checked`);
+        const selected = document.querySelector(`input[name=\"question${index}\"]:checked`);
         if (selected && parseInt(selected.value) === q.answer) {
           score++;
         }
