@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phishing Awareness — SCORM 1.2 (Light Theme)</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Phishing Awareness</h1>
+    <p class="subtitle">Associate degree module (ages 18–21) — Recognize and avoid phishing tactics</p>
+  </header>
+
+  <main class="container">
+    <section class="intro card">
+      <h2>Quick Guide</h2>
+      <ul>
+        <li><strong>Pause</strong> when a message feels urgent or threatening.</li>
+        <li><strong>Check the sender</strong> (address and domain) and hover links to preview the destination.</li>
+        <li><strong>Go direct</strong>: type the official URL yourself or use the official app.</li>
+        <li><strong>Never share passwords</strong> via email, chat, or forms sent to you.</li>
+        <li><strong>Report</strong> anything suspicious to IT/security.</li>
+      </ul>
+      <p>Now take the quiz. You'll get <em>immediate feedback</em> on each question and see your <strong>score</strong> when you submit.</p>
+    </section>
+
+    <section class="quiz card" id="quiz">
+      <h2>Phishing Quiz</h2>
+      <form id="quizForm" novalidate>
+        <div id="questions" class="questions"></div>
+        <div class="actions">
+          <button type="submit" class="btn primary">Submit Quiz</button>
+          <button type="button" id="resetBtn" class="btn">Reset</button>
+        </div>
+      </form>
+      <div id="result" class="result" aria-live="polite"></div>
+      <div class="scorm-status">SCORM: <span id="scormStatus">not initialized</span></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>Phishing Awareness — SCORM 1.2</small>
+  </footer>
+
+  <script src="js/scorm.js"></script>
+  <script src="js/course.js"></script>
+</body>
+</html>
